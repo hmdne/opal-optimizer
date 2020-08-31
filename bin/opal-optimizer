@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "opal/optimizer"
+
+print Opal::Optimizer.new(ARGV[0] ? File.read(ARGV[0]) : STDIN.read).optimize
