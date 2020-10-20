@@ -1,6 +1,7 @@
 require "opal/optimizer/version"
 require "rkelly"
 require "opal/optimizer/helpers"
+require "opal/compiler"
 
 require "pry"
 
@@ -11,7 +12,9 @@ module Opal
     attr_accessor :ast, :opal_version, :corelib, :corelib_source, :corelib_calls,
                   :function_calls
 
-    def initialize(code)
+    attr_accessor :exports
+
+    def initialize(code, exports: "")
       @ast = parse_js(code)
 
       @corelib = @ast.value.find do |i|
@@ -30,6 +33,12 @@ module Opal
       @corelib_source = @corelib.value.value.value.value.function_body.value if @corelib
 
       reload
+
+      # Are exports js or do we need to compile them first?
+      unless [nil, ""].include?(exports) || exports.start_with?("(function(")
+        exports = Opal::Compiler.new(exports).compile
+      end
+      @exports = Opal::Optimizer.new(exports, exports: nil) unless exports == nil
     end
 
     def reload

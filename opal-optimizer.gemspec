@@ -26,4 +26,5 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "rkelly-remix"
+  spec.add_dependency "opal", ">= 1.0.0"
 end

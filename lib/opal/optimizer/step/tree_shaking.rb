@@ -16,7 +16,7 @@ class TreeShaking < Step
 
     method_calls = Set.new
 
-    method_calls += function_calls.map do |i|
+    method_calls += ( function_calls + exports.function_calls ).map do |i|
       out = if i.value_path?(DotAccessorNode) && i.value.accessor.start_with?("$")
         i.value.accessor
       elsif i.value_path?(BracketAccessorNode) &&
