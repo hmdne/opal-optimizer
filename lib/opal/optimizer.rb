@@ -14,21 +14,23 @@ module Opal
 
     attr_accessor :exports
 
-    def initialize(code, exports: "")
+    def initialize(code, exports: "", force_corelib: true)
       @ast = parse_js(code)
 
       @corelib = @ast.value.find do |i|
-        es = i.to_ecma
-        if es.start_with?("(function(undefined) {\n  var global_object") &&
-           es.end_with?(").call(this);")
+        es = code[i.range.from.index..i.range.to.index]
+        if es.start_with?("(function(undefined) {\n  // @note\n"\
+                          "  //   A few conventions for the documentation of this file:") &&
+           es.end_with?("TypeError.$$super = Error;\n}).call(this);")
           @opal_version = 1.0
-        elsif es.start_with?("(function(global_object) {\n  \"use strict\";\n"+
-                             "  var console;\n  if(typeof (globalThis) !== "+
-                             "'undefined') {\n") &&
-              es.end_with?(").call(this);")
+        elsif es.start_with?("(function(global_object) {\n  \"use strict\";\n\n  // @note\n  "\
+                             "//   A few conventions for the documentation of this file:") &&
+              es.end_with?("TypeError.$$super = Error;\n}).call(this);")
           @opal_version = 1.1
         end
       end
+
+      raise ArgumentError, "Couldn't deduce Opal version based on this content" if force_corelib && !@corelib
 
       @corelib_source = @corelib.value.value.value.value.function_body.value if @corelib
 
@@ -38,7 +40,7 @@ module Opal
       unless [nil, ""].include?(exports) || exports.start_with?("(function(")
         exports = Opal::Compiler.new(exports).compile
       end
-      @exports = Opal::Optimizer.new(exports, exports: nil) unless exports == nil
+      @exports = Opal::Optimizer.new(exports, exports: nil, force_corelib: false) unless exports == nil
     end
 
     def reload

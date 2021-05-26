@@ -10,6 +10,7 @@ gem "opal", path: "../opal"
 gem "opal-sprockets", path: "../opal-sprockets"
 gem "opal-browser", path: "../opal-browser"
 
-gem "rkelly-remix"
+gem "rkelly-turbo", path: "../rkelly-turbo"
 
+gem "ruby-prof"
 gem "pry"

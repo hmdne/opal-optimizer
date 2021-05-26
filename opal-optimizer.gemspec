@@ -25,6 +25,6 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "rkelly-remix"
+  spec.add_dependency "rkelly-turbo"
   spec.add_dependency "opal", ">= 1.0.0"
 end

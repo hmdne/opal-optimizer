@@ -8,41 +8,46 @@ PATH
 PATH
   remote: ../opal-sprockets
   specs:
-    opal-sprockets (0.5.0.1.0.4.0)
-      opal (~> 1.0.0)
+    opal-sprockets (1.0.0)
+      opal (>= 1.0, < 1.2)
       sprockets (~> 4.0)
       tilt (>= 1.4)
 
 PATH
   remote: ../opal
   specs:
-    opal (1.0.0)
+    opal (1.1.1)
       ast (>= 2.3.0)
-      parser (~> 2.6)
+      parser (~> 3.0)
+
+PATH
+  remote: ../rkelly-turbo
+  specs:
+    rkelly-turbo (0.1.1.20210526224136)
 
 PATH
   remote: .
   specs:
-    opal-optimizer (0.1.0)
-      rkelly-remix
+    opal-optimizer (0.1.2)
+      opal (>= 1.0.0)
+      rkelly-turbo
 
 GEM
   remote: https://rubygems.org/
   specs:
-    ast (2.4.1)
+    ast (2.4.2)
     coderay (1.1.3)
-    concurrent-ruby (1.1.7)
+    concurrent-ruby (1.1.8)
     diff-lcs (1.4.4)
     method_source (1.0.0)
     paggio (0.2.6)
-    parser (2.7.1.4)
+    parser (3.0.1.1)
       ast (~> 2.4.1)
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
     rack (2.2.3)
     rake (12.3.3)
-    rkelly-remix (0.0.7)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
@@ -56,6 +61,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.9.0)
     rspec-support (3.9.3)
+    ruby-prof (1.4.3)
     sprockets (4.0.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -71,8 +77,9 @@ DEPENDENCIES
   opal-sprockets!
   pry
   rake (~> 12.0)
-  rkelly-remix
+  rkelly-turbo!
   rspec (~> 3.0)
+  ruby-prof
 
 BUNDLED WITH
    2.1.4
