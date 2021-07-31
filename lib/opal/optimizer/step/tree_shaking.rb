@@ -12,6 +12,7 @@ class TreeShaking < Step
     method_defs = corelib_calls["def"] +
                   corelib_calls["defs"] +
                   corelib_calls["defn"] +
+                  corelib_calls["udef"] +
                   aliases.keys
 
     method_calls = Set.new
@@ -44,16 +45,23 @@ class TreeShaking < Step
     method_calls += aliases.values
 
     # Protected methods
-    method_calls += ["$register", "$negative?"]
+    method_calls += []
 
     removed = Set.new
 
     method_defs.each do |m|
       name = m.arguments.value[1]
-      next unless StringNode === name
-
-      name = name.value[1..-2]
-      name = "$" + name if m.value.accessor == "alias"
+      case name
+      when AddNode
+        if StringNode === name.left && StringNode === name.value
+          name = name.left.value[1..-2] + name.value.value[1..-2]
+        end
+      when StringNode
+        name = name.value[1..-2]
+        name = "$" + name if m.value.accessor == "alias"
+      else
+        next
+      end
 
       next if method_calls.include? name
 
