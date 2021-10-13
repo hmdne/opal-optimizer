@@ -46,8 +46,9 @@ module Opal
     def reload
       @function_calls = ast.pointcut(FunctionCallNode).matches
       @corelib_calls = @function_calls.select do |i|
-        i.value_path?(DotAccessorNode, ResolveNode, "Opal")
-      end.group_by { |i| i.value.accessor }
+        i.value_path?(DotAccessorNode, ResolveNode, "Opal") ||
+        i.value_path?(ResolveNode, /\A\$/)
+      end.group_by { |i| (i.value.value.is_a?(String) ? i.value.value : i.value.accessor).gsub('$', '') }
       @corelib_calls = Hash.new { [] }.merge(@corelib_calls)
     end
 

@@ -55,10 +55,17 @@ class TreeShaking < Step
       when AddNode
         if StringNode === name.left && StringNode === name.value
           name = name.left.value[1..-2] + name.value.value[1..-2]
+        else
+          next
         end
       when StringNode
         name = name.value[1..-2]
-        name = "$" + name if m.value.accessor == "alias"
+        case m.value
+        when ResolveNode
+          name = "$" + name if m.value.value == "$alias"
+        when DotAccessorNode
+          name = "$" + name if m.value.accessor == "alias"
+        end
       else
         next
       end
@@ -81,7 +88,7 @@ class TreeShaking < Step
   def run
     loop do
       removed = shake_methods
-      #$stdout.puts removed.inspect
+      # $stdout.puts removed.inspect
       reload
       break if removed.length == 0
     end
