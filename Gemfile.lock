@@ -20,7 +20,7 @@ PATH
 PATH
   remote: .
   specs:
-    opal-optimizer (0.1.3)
+    opal-optimizer (0.1.4)
       opal (>= 1.0.0)
       rkelly-turbo
 
