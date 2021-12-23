@@ -15,7 +15,7 @@ class TreeShaking < Step
                   corelib_calls["udef"] +
                   aliases.keys
 
-    method_calls = Set.new
+    method_calls = Set.new(['$method_missing'])
 
     method_calls += ( function_calls + exports.function_calls ).map do |i|
       out = if i.value_path?(DotAccessorNode) && i.value.accessor.start_with?("$")
