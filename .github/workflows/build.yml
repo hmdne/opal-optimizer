@@ -26,13 +26,9 @@ jobs:
           - name: Opal-1.1
             opal: 1.1
           - name: Opal-1.0
-            opal: 1.0
-          - name: Ruby-master
-            ruby: master
-          - name: Ruby-2.7
-            ruby: 2.7
-          - name: Ruby-2.6
-            ruby: 2.6
+            opal: '1.0'
+          - name: Ruby-head
+            ruby: head
           - name: Windows
             os: windows-latest
           - name: macOS

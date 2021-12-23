@@ -1,5 +1,6 @@
 require "opal-browser"
 require "opal/builder"
+require "fileutils"
 
 RSpec.describe Opal::Optimizer do
   it "optimizes a basic Opal output" do
@@ -43,8 +44,9 @@ RSpec.describe Opal::Optimizer do
     out = Opal::Optimizer.new(file).optimize
     expect(out).not_to be nil
     expect(out).to include "/* destroyed: "
-    File.write("/tmp/example.js", out)
-    expect(`node /tmp/example.js 2>/dev/null`).to eq("01234\n")
+    FileUtils.mkdir_p("tmp")
+    File.write("tmp/example.js", out)
+    expect(`node tmp/example.js 2>#{Gem.win_platform? ? "NUL" : "/dev/null"}`).to eq("01234\n")
   end
 
   # Too large for now, maybe later.

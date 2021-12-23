@@ -8,7 +8,7 @@ gem "rspec"
 
 case ENV['OPAL_VERSION']
 when nil
-when /\./
+when /\A[0-9.]+\z/
   gem 'opal', "~> #{ENV['OPAL_VERSION']}.0a"
 else
   gem 'opal', github: 'opal/opal', ref: ENV['OPAL_VERSION']
