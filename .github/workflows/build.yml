@@ -1,0 +1,67 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+      - "*-stable"
+      - "*/ci-check"
+  pull_request: {}
+
+jobs:
+  rake:
+    name: ${{ matrix.combo.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        combo:
+          - name: Opal-master
+            opal: master
+          - name: Opal-1.4
+            opal: 1.4
+          - name: Opal-1.3
+            opal: 1.3
+          - name: Opal-1.2
+            opal: 1.2
+          - name: Opal-1.1
+            opal: 1.1
+          - name: Opal-1.0
+            opal: 1.0
+          - name: Ruby-master
+            ruby: master
+          - name: Ruby-2.7
+            ruby: 2.7
+          - name: Ruby-2.6
+            ruby: 2.6
+          - name: Windows
+            os: windows-latest
+          - name: macOS
+            os: macos-latest
+
+    runs-on: ${{ matrix.combo.os || 'ubuntu-latest' }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: set environment variables
+        run: |
+          echo "OPAL_VERSION=${{ matrix.combo.opal || '1.3' }}" >> $GITHUB_ENV
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.combo.ruby || '3.0' }}
+      - run: bundle lock
+      - uses: actions/cache@v2
+        with:
+          path: ./vendor/bundle
+          key: ${{ runner.os }}-${{ matrix.combo.ruby || '3.0' }}-gems-${{ matrix.combo.opal || '1.3' }}-${{ github.ref }}-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.combo.ruby || '3.0' }}-gems-${{ matrix.combo.opal || '1.3' }}-${{ github.ref }}
+            ${{ runner.os }}-${{ matrix.combo.ruby || '3.0' }}-gems-${{ matrix.combo.opal || '1.3' }}-master
+            ${{ runner.os }}-${{ matrix.combo.ruby || '3.0' }}-gems-${{ matrix.combo.opal || '1.3' }}-
+            ${{ runner.os }}-${{ matrix.combo.ruby || '3.0' }}-gems-
+      - name: bundle install
+        run: |
+          bundle config path $PWD/vendor/bundle
+          bundle install --jobs 4 --retry 3
+          bundle clean
+      - run: bundle exec rake
+

@@ -11,8 +11,12 @@ class CollapseStubs < Step
 
     nodes = corelib_calls["add_stubs"] || []
     nodes.each do |node|
-      stubs += node.arguments.value.first.value.map do |i|
-        i.value.value.gsub(/['"]/, '')
+      if opal_version >= 1.4
+        stubs += node.arguments.value.first.value[1..-2].split(',')
+      else
+        stubs += node.arguments.value.first.value.map do |i|
+          i.value.value.gsub(/['"]/, '')
+        end
       end
 
       node.destroy! "CollapseStubs"
@@ -26,7 +30,7 @@ class CollapseStubs < Step
     stubs -= ["$respond_to_missing?"] if opal_version >= 1.1
 
     new_stub_code = <<~end
-      var stubs = '#{stubs.to_a.join('#')}'.split('#'), stubs_obj = {};
+      var stubs = '#{stubs.to_a.join(',')}'.split(','), stubs_obj = {};
       for (var i = 0; i < stubs.length; i++)
         stubs_obj[stubs[i]] = {value: Opal.stub_for(stubs[i]), enumerable: false, configurable: true, writable: true};
       Object.defineProperties(Opal.BasicObject.$$prototype, stubs_obj);

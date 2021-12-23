@@ -3,14 +3,20 @@ source "https://rubygems.org"
 # Specify your gem's dependencies in opal-optimizer.gemspec
 gemspec
 
-gem "rake", "~> 12.0"
-gem "rspec", "~> 3.0"
+gem "rake"
+gem "rspec"
 
-gem "opal", path: "../opal"
+case ENV['OPAL_VERSION']
+when nil
+when /\./
+  gem 'opal', "~> #{ENV['OPAL_VERSION']}.0a"
+else
+  gem 'opal', github: 'opal/opal', ref: ENV['OPAL_VERSION']
+end
 gem "opal-sprockets"
-gem "opal-browser", path: "../opal-browser"
+gem "opal-browser"
 
-gem "rkelly-turbo", path: "../rkelly-turbo"
+gem "rkelly-turbo"
 
 gem "ruby-prof"
 gem "pry"
