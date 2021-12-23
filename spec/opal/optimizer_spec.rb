@@ -39,14 +39,19 @@ RSpec.describe Opal::Optimizer do
   it "optimizes an Opal program and allows us to execute it" do
     file = Opal::Builder.new.build_str(<<~RUBY, '(opt)').to_s
       require "opal"
+      o = Object.new
+      def o.method_missing(meth)
+        meth
+      end
       puts 5.times.to_a.join
+      puts o.hello
     RUBY
     out = Opal::Optimizer.new(file).optimize
     expect(out).not_to be nil
     expect(out).to include "/* destroyed: "
     FileUtils.mkdir_p("tmp")
     File.write("tmp/example.js", out)
-    expect(`node tmp/example.js 2>#{Gem.win_platform? ? "NUL" : "/dev/null"}`).to eq("01234\n")
+    expect(`node tmp/example.js 2>#{Gem.win_platform? ? "NUL" : "/dev/null"}`).to eq("01234\nhello\n")
   end
 
   # Too large for now, maybe later.

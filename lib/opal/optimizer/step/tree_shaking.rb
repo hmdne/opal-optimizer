@@ -25,7 +25,11 @@ class TreeShaking < Step
             i.value.accessor.value[1] == '$'
         i.value.accessor.value[1..-2]
       elsif i.value_path?(ResolveNode, ->(i) { %w[$send $send2 $refined_send].include? i })
-        old = i.arguments.value[1]
+        if i.value.value == '$send'
+          old = i.arguments.value[1]
+        else
+          old = i.arguments.value[2]
+        end
         "$" + old.value[1..-2] if StringNode === old
       end
 
@@ -80,7 +84,7 @@ class TreeShaking < Step
       if opal_version >= 1.4
         stubs = stubcall.arguments.value.first.value
         new_stubs = stubs[1..-2].split(",").reject do |i|
-          removed.include? i
+          removed.include? i[1..-1]
         end.join(',')
         new_stubs = "'#{new_stubs}'"
         stubs.replace(new_stubs)
