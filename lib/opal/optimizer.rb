@@ -24,12 +24,15 @@ module Opal
            es.end_with?("TypeError.$$super = Error;\n}).call(this);")
           @opal_version = 1.0
         elsif es.start_with?("(function(global_object) {\n  \"use strict\";\n\n  // @note\n  "\
-                             "//   A few conventions for the documentation of this file:") &&
-              es.end_with?("TypeError.$$super = Error;\n}).call(this);")
-          if es.include? 'function $prop(object,'
-            @opal_version = 1.4
-          else
-            @opal_version = 1.1
+                             "//   A few conventions for the documentation of this file:")
+          if es.end_with?("TypeError.$$super = Error;\n}).call(this);")
+            if es.include? 'function $prop(object,'
+              @opal_version = 1.4
+            else
+              @opal_version = 1.1
+            end
+          elsif es.end_with?("Opal.file_sources = {};\n}).call(this);")
+            @opal_version = 1.6
           end
         end
       end
