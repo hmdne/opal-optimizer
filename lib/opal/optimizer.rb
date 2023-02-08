@@ -5,6 +5,8 @@ require "opal/compiler"
 
 module Opal
   class Optimizer
+    class NonOpalArgumentError < ArgumentError; end
+
     include Helpers
 
     attr_accessor :ast, :opal_version, :corelib, :corelib_source, :corelib_calls,
@@ -35,7 +37,7 @@ module Opal
         end
       end
 
-      raise ArgumentError, "Couldn't deduce Opal version based on this content" if force_corelib && !@corelib
+      raise NonOpalArgumentError, "Couldn't deduce Opal version based on this content" if force_corelib && !@corelib
 
       @corelib_source = @corelib.value.value.value.value.function_body.value if @corelib
 

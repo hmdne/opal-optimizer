@@ -7,6 +7,8 @@ module Opal; class Optimizer
 module Sprockets
   def self.call input
     Opal::Optimizer.new(input[:data]).optimize
+  rescue NonOpalArgumentError
+    input[:data]
   end
 end
 
