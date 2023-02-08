@@ -3,8 +3,6 @@ require "rkelly"
 require "opal/optimizer/helpers"
 require "opal/compiler"
 
-require "pry"
-
 module Opal
   class Optimizer
     include Helpers
