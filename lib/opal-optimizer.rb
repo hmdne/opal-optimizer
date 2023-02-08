@@ -1,0 +1,2 @@
+require "opal/optimizer"
+
