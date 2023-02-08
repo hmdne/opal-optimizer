@@ -15,6 +15,12 @@ module Opal
     attr_accessor :exports
 
     def initialize(code, exports: "", force_corelib: true)
+      if force_corelib
+        unless code.include? "//   A few conventions for the documentation of this file:"
+          raise NonOpalArgumentError, "A non-Opal code provided"
+        end
+      end
+
       @ast = parse_js(code)
 
       @corelib = @ast.value.find do |i|
@@ -37,7 +43,7 @@ module Opal
         end
       end
 
-      raise NonOpalArgumentError, "Couldn't deduce Opal version based on this content" if force_corelib && !@corelib
+      raise ArgumentError, "Couldn't deduce Opal version based on this content" if force_corelib && !@corelib
 
       @corelib_source = @corelib.value.value.value.value.function_body.value if @corelib
 
