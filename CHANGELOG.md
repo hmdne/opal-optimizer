@@ -1,3 +1,7 @@
+## v0.1.8
+
+* Improve interop with Sprockets when non-Opal javascripts are compiled as well
+
 ## v0.1.7
 
 * Opal 1.6 compatibility
